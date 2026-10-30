@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Wyniki{% if city %} – {{ city }}{% endif %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style1.css') }}">
+</head>
+<body>
+    <main class="page">
+
+        <header class="page__header">
+            <a class="back" href="/">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M15 5l-7 7 7 7"/>
+                </svg>
+                Strona główna
+            </a>
+            <h1 class="page__title">Wyniki</h1>
+            <p class="page__lead">
+                {% if city %}Pogoda dla miejscowości {{ city }}.{% else %}Aktualna pogoda i historia pomiarów.{% endif %}
+            </p>
+        </header>
+
+        <!-- Aktualna pogoda -->
+        <section class="section" aria-labelledby="h-aktualna">
+            <h2 class="section__title" id="h-aktualna">Aktualna pogoda</h2>
+
+            {% if latest %}
+            <div class="cards">
+                <article class="card card--main">
+                    <header class="card__head">
+                        <h3 class="card__place">{{ latest.place }}</h3>
+                        <span class="card__time">{{ latest.timestamp }}</span>
+                    </header>
+                    <p class="card__temp">{{ latest.temp }}<span class="card__unit">°C</span></p>
+                </article>
+
+                <article class="card">
+                    <h3 class="card__label">Odczuwalna</h3>
+                    <p class="card__value">{{ latest.feels_like }}<span class="card__small">°C</span></p>
+                </article>
+
+                <article class="card">
+                    <h3 class="card__label">Wiatr</h3>
+                    <p class="card__value">{{ latest.wind }}<span class="card__small">m/s</span></p>
+                </article>
+
+                <article class="card">
+                    <h3 class="card__label">Wschód słońca</h3>
+                    <p class="card__value">{{ latest.sunrise }}</p>
+                </article>
+
+                <article class="card">
+                    <h3 class="card__label">Zachód słońca</h3>
+                    <p class="card__value">{{ latest.sunset }}</p>
+                </article>
+            </div>
+            {% else %}
+            <p class="empty">Brak danych do wyświetlenia. Wyszukaj miejscowość, aby pobrać pierwszy odczyt.</p>
+            {% endif %}
+        </section>
+
+        <!-- Tabela -->
+        <section class="section" aria-labelledby="h-historia">
+            <h2 class="section__title" id="h-historia">Historia pomiarów</h2>
+
+            {% if df %}
+            <div class="table-wrap">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Miejsce</th>
+                            <th scope="col" class="num">Temperatura (°C)</th>
+                            <th scope="col" class="num">Odczuwalna (°C)</th>
+                            <th scope="col" class="num">Wiatr (m/s)</th>
+                            <th scope="col">Data pomiaru</th>
+                            <th scope="col">Wschód słońca</th>
+                            <th scope="col">Zachód słońca</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for r in df %}
+                        <tr>
+                            <td class="strong">{{ r.place }}</td>
+                            <td class="num">{{ r.temp }}</td>
+                            <td class="num">{{ r.feels_like }}</td>
+                            <td class="num">{{ r.wind }}</td>
+                            <td class="muted">{{ r.timestamp }}</td>
+                            <td class="muted">{{ r.sunrise }}</td>
+                            <td class="muted">{{ r.sunset }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="empty">Tabela jest pusta. Dane pojawią się po pierwszym zapisie do pliku xlsx.</p>
+            {% endif %}
+        </section>
+
+        <!-- Skąd dane -->
+        <section class="section source" aria-labelledby="h-zrodlo">
+            <h2 class="section__title" id="h-zrodlo">Skąd pochodzą dane</h2>
+            <p class="source__text">
+                Dane pogodowe pobieramy z serwisu OpenWeather, który udostępnia aktualne odczyty
+                dla miast na całym świecie. Każdy pobrany wynik zapisujemy w pliku xlsx,
+                a aplikacja odczytuje ten plik i prezentuje zawartość na tej stronie
+                &ndash; jako karty z aktualną pogodą oraz tabelę z historią pomiarów.
+            </p>
+            <dl class="source__list">
+                <div>
+                    <dt>Źródło</dt>
+                    <dd>OpenWeather</dd>
+                </div>
+                <div>
+                    <dt>Zapis</dt>
+                    <dd>Plik xlsx</dd>
+                </div>
+                <div>
+                    <dt>Prezentacja</dt>
+                    <dd>Ta aplikacja</dd>
+                </div>
+            </dl>
+        </section>
+
+    </main>
+</body>
+</html>

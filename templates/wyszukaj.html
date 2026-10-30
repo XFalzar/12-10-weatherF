@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Wyszukaj – Pogoda</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style2.css') }}">
+</head>
+<body>
+    <main class="page">
+
+        <header class="page__header">
+            <a class="back" href="/">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M15 5l-7 7 7 7"/>
+                </svg>
+                Strona główna
+            </a>
+            <h1 class="page__title">Wyszukaj</h1>
+            <p class="page__lead">Wpisz nazwę miasta, aby sprawdzić aktualną pogodę.</p>
+        </header>
+
+        <!-- Formularz -->
+        <section class="section" aria-labelledby="h-formularz">
+            <h2 class="section__title" id="h-formularz">Miasto</h2>
+
+            <form class="search" action="/wyszukaj" method="post">
+                <label class="search__label" for="city">Wpisz nazwę miasta</label>
+                <div class="search__row">
+                    <input class="search__input" id="city" type="text" name="query"
+                           placeholder="np. Warszawa" autocomplete="off" required>
+                    <button class="search__button" type="submit">Wyszukaj</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Wynik -->
+        <section class="section" aria-labelledby="h-wynik">
+            <h2 class="section__title" id="h-wynik">Wynik wyszukiwania</h2>
+
+            {% if weather %}
+            <div class="table-wrap">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Miejsce</th>
+                            <th scope="col" class="num">Temperatura (°C)</th>
+                            <th scope="col" class="num">Odczuwalna (°C)</th>
+                            <th scope="col" class="num">Wiatr (m/s)</th>
+                            <th scope="col">Data pomiaru</th>
+                            <th scope="col">Wschód słońca</th>
+                            <th scope="col">Zachód słońca</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="strong">{{ weather.place }}</td>
+                            <td class="num">{{ weather.temp }}</td>
+                            <td class="num">{{ weather.feels_like }}</td>
+                            <td class="num">{{ weather.wind }}</td>
+                            <td class="muted">{{ weather.timestamp }}</td>
+                            <td class="muted">{{ weather.sunrise }}</td>
+                            <td class="muted">{{ weather.sunset }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="empty">Nie ma jeszcze wyniku. Wpisz nazwę miasta i wybierz „Wyszukaj”.</p>
+            {% endif %}
+        </section>
+
+    </main>
+</body>
+</html>
